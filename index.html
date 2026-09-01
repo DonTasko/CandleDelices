@@ -2,385 +2,169 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Candle Delices — Velas Decorativas</title>
+<meta name="description" content="Velas decorativas com aromas próprios, compostos à mão em pequenos lotes.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#17120e',
+          raised: '#211a14',
+          card: '#241d16',
+          line: '#372c20',
+          flame: '#e6a13c',
+          flamedim: '#b57f2c',
+          wax: '#8a5a35',
+          cream: '#f3e8d8',
+          creamdim: '#ab9884',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Work Sans', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
 <style>
-  :root{
-    --bg: #1a1410;
-    --bg-raised: #241c16;
-    --bg-card: #2a221a;
-    --line: #3a2f24;
-    --flame: #e39a3d;
-    --flame-dim: #b87a2e;
-    --wax: #8b5e3c;
-    --cream: #f2e8da;
-    --cream-dim: #a89684;
-  }
-  *{ box-sizing: border-box; margin:0; padding:0; }
-  html{ -webkit-text-size-adjust: 100%; }
-  body{
-    background: var(--bg);
-    color: var(--cream);
-    font-family: 'Work Sans', sans-serif;
-    line-height: 1.5;
-    padding-bottom: 90px;
-  }
-  h1,h2,h3, .display{
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  html{ scroll-behavior: smooth; }
+  body{ background:#17120e; font-family:'Work Sans', sans-serif; }
+  .font-display{ font-family:'Fraunces', serif; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
   }
 
-  /* ---------- Hero ---------- */
-  .hero{
-    padding: 48px 24px 36px;
-    position: relative;
-    background:
-      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(227,154,61,0.14), transparent 70%),
-      var(--bg);
-    border-bottom: 1px solid var(--line);
+  /* candle-flicker glow behind the logo — the one signature ambient motion */
+  @keyframes flicker{
+    0%, 100% { opacity: .55; transform: scale(1); }
+    25%      { opacity: .7;  transform: scale(1.03); }
+    50%      { opacity: .45; transform: scale(0.98); }
+    75%      { opacity: .65; transform: scale(1.02); }
   }
-  .hero .mark{
-    height: 92px;
-    width: auto;
-    margin-bottom: 10px;
-    display: block;
-  }
-  .hero h1{
-    font-size: 40px;
-    line-height: 1.05;
-    color: var(--cream);
-    max-width: 11ch;
-  }
-  .hero h1 em{
-    font-style: italic;
-    color: var(--flame);
-  }
-  .hero p{
-    margin-top: 14px;
-    color: var(--cream-dim);
-    font-size: 15px;
-    max-width: 34ch;
+  .glow{
+    animation: flicker 4.5s ease-in-out infinite;
   }
 
-  /* ---------- Product grid ---------- */
-  .catalog{ padding: 32px 20px 16px; }
-  .catalog-heading{
-    font-size: 22px;
-    margin-bottom: 4px;
-  }
-  .catalog-sub{
-    color: var(--cream-dim);
-    font-size: 14px;
-    margin-bottom: 22px;
-  }
-  .grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .card{
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .card-img{
-    aspect-ratio: 1 / 1;
-    background: var(--bg-raised);
-    overflow: hidden;
-    position: relative;
-  }
-  .card-img img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .card-body{
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-  .card-name{
-    font-size: 15px;
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-  .card-note{
-    font-size: 12px;
-    color: var(--cream-dim);
-    flex: 1;
-  }
-  .card-footer{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 4px;
-  }
-  .card-price{
-    font-size: 15px;
-    color: var(--flame);
-    font-weight: 600;
-  }
+  [data-reveal]{ opacity: 0; }
 
-  .stepper{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 3px;
-  }
-  .stepper button{
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: none;
-    background: var(--bg-raised);
-    color: var(--cream);
-    font-size: 15px;
-    line-height: 1;
-    cursor: pointer;
-  }
-  .stepper button:active{ background: var(--flame-dim); }
-  .stepper .qty{
-    min-width: 14px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 500;
-  }
-  .add-btn{
-    width: 100%;
-    padding: 8px 0;
-    border-radius: 20px;
-    border: 1px solid var(--flame-dim);
-    background: transparent;
-    color: var(--flame);
-    font-family: 'Work Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .add-btn:active{ background: rgba(227,154,61,0.12); }
+  .stepper button{ -webkit-tap-highlight-color: transparent; }
+  input, textarea{ -webkit-tap-highlight-color: transparent; }
 
-  /* ---------- Sticky cart bar ---------- */
-  .cart-bar{
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    background: var(--flame);
-    color: #1a1410;
-    border-radius: 30px;
-    padding: 14px 20px;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    z-index: 40;
-    cursor: pointer;
-    border: none;
-  }
-  .cart-bar.show{ display: flex; }
-  .cart-bar .cnt{
-    background: #1a1410;
-    color: var(--flame);
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    margin-right: 8px;
-  }
-
-  /* ---------- Drawer ---------- */
-  .overlay{
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.55);
-    z-index: 50;
-    display: none;
-  }
-  .overlay.show{ display: block; }
-  .drawer{
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    background: var(--bg-raised);
-    border-top: 1px solid var(--line);
-    border-radius: 18px 18px 0 0;
-    z-index: 51;
-    max-height: 82vh;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.28s ease;
-  }
-  .drawer.show{ transform: translateY(0); }
-  .drawer-handle{
-    width: 36px; height: 4px;
-    background: var(--line);
-    border-radius: 2px;
-    margin: 12px auto 4px;
-  }
-  .drawer-head{
-    padding: 8px 20px 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--line);
-  }
-  .drawer-head h3{ font-size: 18px; }
-  .drawer-head button{
-    background: none; border: none;
-    color: var(--cream-dim);
-    font-size: 20px;
-    cursor: pointer;
-  }
-  .drawer-items{
-    overflow-y: auto;
-    padding: 8px 20px;
-    flex: 1;
-  }
-  .drawer-item{
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .drawer-item img{
-    width: 52px; height: 52px;
-    border-radius: 4px;
-    object-fit: cover;
-    background: var(--bg);
-  }
-  .drawer-item-info{ flex: 1; }
-  .drawer-item-name{ font-size: 14px; font-weight: 500; }
-  .drawer-item-price{ font-size: 12px; color: var(--cream-dim); margin-top: 2px; }
-  .empty-msg{
-    color: var(--cream-dim);
-    font-size: 14px;
-    text-align: center;
-    padding: 40px 20px;
-  }
-
-  .drawer-foot{
-    padding: 16px 20px 22px;
-    border-top: 1px solid var(--line);
-  }
-  .field{
-    margin-bottom: 10px;
-  }
-  .field label{
-    display: block;
-    font-size: 12px;
-    color: var(--cream-dim);
-    margin-bottom: 4px;
-  }
-  .field input, .field textarea{
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 9px 10px;
-    color: var(--cream);
-    font-family: 'Work Sans', sans-serif;
-    font-size: 14px;
-  }
-  .field textarea{ resize: none; height: 48px; }
-  .total-row{
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin: 12px 0 14px;
-  }
-  .total-row .label{ font-size: 13px; color: var(--cream-dim); }
-  .total-row .amount{ font-size: 22px; font-family: 'Fraunces', serif; color: var(--flame); }
-
-  .checkout-btn{
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    background: #25D366;
-    color: #0b1f12;
-    font-weight: 600;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-  }
-  .checkout-btn:disabled{
-    opacity: 0.4;
-  }
-
-  footer{
-    text-align: center;
-    padding: 30px 20px 10px;
-    color: var(--cream-dim);
-    font-size: 12px;
-  }
+  ::-webkit-scrollbar{ width: 8px; }
+  ::-webkit-scrollbar-track{ background: #17120e; }
+  ::-webkit-scrollbar-thumb{ background: #372c20; border-radius: 8px; }
 </style>
 </head>
-<body>
 
-  <section class="hero">
-    <img class="mark" src="images/logo-candle-delices.png" alt="Candle Delices">
-    <h1>Um momento de <em>pausa</em>, aceso à mão.</h1>
-    <p>Velas decorativas com aromas próprios, compostos em casa e não encontrados em mais lado nenhum. Cera vegetal, queima lenta.</p>
+<body class="bg-bg text-cream antialiased pb-24">
+
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden px-6 pt-14 pb-16 sm:pt-20 sm:pb-24 border-b border-line">
+    <div class="glow pointer-events-none absolute left-1/2 top-8 -translate-x-1/2 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-flame/20 blur-3xl"></div>
+
+    <div class="relative max-w-md sm:max-w-xl mx-auto flex flex-col items-center text-center">
+      <img id="logo" src="images/logo-candle-delices.png" alt="Candle Delices"
+           class="w-52 sm:w-64 h-auto mb-2 select-none" draggable="false">
+
+      <h1 id="hero-title" class="font-display font-medium text-3xl sm:text-5xl leading-tight text-cream mt-4 max-w-[14ch]">
+        Acenda uma pausa no dia.
+      </h1>
+
+      <p id="hero-sub" class="font-body text-sm sm:text-base text-creamdim mt-4 max-w-[36ch]">
+        Aromas próprios, compostos em casa e não encontrados em mais lado nenhum. Cera vegetal, queima lenta, pequenos lotes.
+      </p>
+
+      <a href="#colecao" id="hero-cta"
+         class="mt-8 inline-flex items-center gap-2 border border-flamedim text-flame font-body text-sm font-medium px-6 py-3 rounded-full hover:bg-flame/10 transition-colors">
+        Ver coleção
+        <i data-lucide="arrow-down" class="w-4 h-4"></i>
+      </a>
+    </div>
   </section>
 
-  <section class="catalog">
-    <div class="catalog-heading">Coleção</div>
-    <div class="catalog-sub">8 aromas próprios, cera vegetal, feitas em pequenos lotes.</div>
-    <div class="grid" id="grid"></div>
+  <!-- ================= CATALOG ================= -->
+  <section id="colecao" class="px-5 sm:px-8 pt-12 pb-6 max-w-5xl mx-auto">
+    <div class="flex items-end justify-between mb-6" data-reveal>
+      <div>
+        <h2 class="font-display text-xl sm:text-2xl text-cream">Coleção</h2>
+        <p class="text-creamdim text-sm mt-1">8 aromas próprios · cera vegetal · pequenos lotes</p>
+      </div>
+      <i data-lucide="flame" class="w-6 h-6 text-flame shrink-0"></i>
+    </div>
+
+    <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
   </section>
 
-  <footer>Candle Delices — velas feitas à mão, em pequenos lotes</footer>
+  <footer class="text-center text-creamdim text-xs py-10 px-6">
+    Candle Delices — velas feitas à mão, em pequenos lotes
+  </footer>
 
-  <!-- Sticky cart bar -->
-  <button class="cart-bar" id="cartBar">
-    <span><span class="cnt" id="cartCount">0</span>Ver carrinho</span>
+  <!-- ================= STICKY CART BAR ================= -->
+  <button id="cartBar"
+    class="hidden fixed left-4 right-4 bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-full sm:max-w-md
+           z-40 items-center justify-between gap-3 bg-flame text-bg font-body font-semibold text-sm
+           rounded-full px-5 py-3.5 shadow-xl shadow-black/40">
+    <span class="flex items-center gap-2">
+      <span id="cartCount" class="bg-bg text-flame rounded-full w-6 h-6 flex items-center justify-center text-xs">0</span>
+      Ver carrinho
+    </span>
     <span id="cartTotal">0,00 €</span>
   </button>
 
-  <!-- Drawer -->
-  <div class="overlay" id="overlay"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawer-handle"></div>
-    <div class="drawer-head">
-      <h3>O seu pedido</h3>
-      <button id="closeDrawer">✕</button>
+  <!-- ================= DRAWER ================= -->
+  <div id="overlay" class="hidden fixed inset-0 bg-black/60 z-50"></div>
+
+  <div id="drawer"
+    class="fixed left-0 right-0 bottom-0 z-50 bg-raised border-t border-line rounded-t-2xl
+           max-h-[85vh] flex flex-col translate-y-full transition-transform duration-300 ease-out">
+    <div class="w-9 h-1 bg-line rounded-full mx-auto mt-3 mb-1"></div>
+
+    <div class="flex items-center justify-between px-5 sm:px-6 py-3 border-b border-line">
+      <h3 class="font-display text-lg">O seu pedido</h3>
+      <button id="closeDrawer" class="text-creamdim hover:text-cream p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
     </div>
-    <div class="drawer-items" id="drawerItems"></div>
-    <div class="drawer-foot">
-      <div class="field">
-        <label for="custName">Nome</label>
-        <input type="text" id="custName" placeholder="O seu nome">
+
+    <div id="drawerItems" class="overflow-y-auto px-5 sm:px-6 flex-1"></div>
+
+    <div class="px-5 sm:px-6 pt-4 pb-6 border-t border-line">
+      <div class="mb-2.5">
+        <label for="custName" class="block text-xs text-creamdim mb-1">Nome</label>
+        <input id="custName" type="text" placeholder="O seu nome"
+          class="w-full bg-bg border border-line rounded-lg px-3 py-2.5 text-sm text-cream placeholder:text-creamdim/60 focus:outline-none focus:border-flamedim">
       </div>
-      <div class="field">
-        <label for="custNote">Morada / notas de entrega (opcional)</label>
-        <textarea id="custNote" placeholder="Morada para entrega ou notas"></textarea>
+      <div class="mb-3">
+        <label for="custNote" class="block text-xs text-creamdim mb-1">Morada / notas de entrega (opcional)</label>
+        <textarea id="custNote" placeholder="Morada para entrega ou notas" rows="2"
+          class="w-full bg-bg border border-line rounded-lg px-3 py-2.5 text-sm text-cream placeholder:text-creamdim/60 resize-none focus:outline-none focus:border-flamedim"></textarea>
       </div>
-      <div class="total-row">
-        <span class="label">Total</span>
-        <span class="amount" id="drawerTotal">0,00 €</span>
+
+      <div class="flex items-baseline justify-between mb-3.5">
+        <span class="text-xs text-creamdim">Total</span>
+        <span id="drawerTotal" class="font-display text-2xl text-flame">0,00 €</span>
       </div>
-      <button class="checkout-btn" id="checkoutBtn" disabled>Enviar pedido por WhatsApp</button>
+
+      <button id="checkoutBtn" disabled
+        class="w-full flex items-center justify-center gap-2 bg-[#25D366] disabled:opacity-40
+               text-[#0b1f12] font-semibold text-sm py-3.5 rounded-xl">
+        <i data-lucide="send" class="w-4 h-4"></i>
+        Enviar pedido por WhatsApp
+      </button>
     </div>
   </div>
 
@@ -398,7 +182,7 @@
     { id: 8, name: "Café Torrado", note: "Fragrância assinatura, café acabado de moer.", price: 12.00, img: "images/vela-cafe.jpg" },
   ];
 
-  const cart = {}; // id -> qty
+  const cart = {};
 
   const grid = document.getElementById('grid');
   const cartBar = document.getElementById('cartBar');
@@ -414,34 +198,48 @@
 
   function fmt(v){ return v.toFixed(2).replace('.', ',') + ' €'; }
 
-  function renderGrid(){
-    grid.innerHTML = PRODUCTS.map(p => `
-      <div class="card">
-        <div class="card-img"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='var(--bg-raised)'; this.remove();"></div>
-        <div class="card-body">
-          <div class="card-name">${p.name}</div>
-          <div class="card-note">${p.note}</div>
-          <div class="card-footer">
-            <div class="card-price">${fmt(p.price)}</div>
-          </div>
-          <div id="ctrl-${p.id}"></div>
+  function cardHTML(p){
+    return `
+      <div class="product-card bg-card border border-line rounded-lg overflow-hidden flex flex-col" data-id="${p.id}">
+        <div class="aspect-square bg-raised overflow-hidden">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" draggable="false"
+               class="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-105"
+               onerror="this.parentElement.classList.add('flex','items-center','justify-center'); this.remove();">
         </div>
-      </div>
-    `).join('');
+        <div class="p-3 flex flex-col gap-1.5 flex-1">
+          <div class="font-display text-[15px] leading-tight">${p.name}</div>
+          <div class="text-xs text-creamdim flex-1">${p.note}</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="text-flame text-[15px] font-semibold font-body">${fmt(p.price)}</span>
+          </div>
+          <div class="ctrl mt-1"></div>
+        </div>
+      </div>`;
+  }
+
+  function renderGrid(){
+    grid.innerHTML = PRODUCTS.map(cardHTML).join('');
     PRODUCTS.forEach(p => renderControl(p.id));
+    lucide.createIcons();
+    animateGrid();
   }
 
   function renderControl(id){
-    const el = document.getElementById(`ctrl-${id}`);
+    const card = grid.querySelector(`.product-card[data-id="${id}"] .ctrl`);
     const qty = cart[id] || 0;
     if(qty === 0){
-      el.innerHTML = `<button class="add-btn" onclick="changeQty(${id},1)">Adicionar</button>`;
+      card.innerHTML = `
+        <button onclick="changeQty(${id},1)"
+          class="w-full py-2 rounded-full border border-flamedim text-flame text-xs font-medium
+                 hover:bg-flame/10 active:scale-[0.98] transition">
+          Adicionar
+        </button>`;
     } else {
-      el.innerHTML = `
-        <div class="stepper">
-          <button onclick="changeQty(${id},-1)">−</button>
-          <span class="qty">${qty}</span>
-          <button onclick="changeQty(${id},1)">+</button>
+      card.innerHTML = `
+        <div class="flex items-center justify-between border border-line rounded-full px-1 py-1">
+          <button onclick="changeQty(${id},-1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">−</button>
+          <span class="text-sm font-medium">${qty}</span>
+          <button onclick="changeQty(${id},1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">+</button>
         </div>`;
     }
   }
@@ -468,27 +266,35 @@
     cartCount.textContent = count;
     cartTotal.textContent = fmt(total);
     drawerTotal.textContent = fmt(total);
-    cartBar.classList.toggle('show', count > 0);
     checkoutBtn.disabled = count === 0;
+
+    if(count > 0 && cartBar.classList.contains('hidden')){
+      cartBar.classList.remove('hidden');
+      cartBar.classList.add('flex');
+      gsap.fromTo(cartBar, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'back.out(1.6)' });
+    } else if(count === 0){
+      cartBar.classList.add('hidden');
+      cartBar.classList.remove('flex');
+    }
   }
 
   function renderDrawerItems(){
     const lines = cartLines();
     if(lines.length === 0){
-      drawerItems.innerHTML = `<div class="empty-msg">O carrinho está vazio.<br>Adicione velas para começar.</div>`;
+      drawerItems.innerHTML = `<div class="text-creamdim text-sm text-center py-10">O carrinho está vazio.<br>Adicione velas para começar.</div>`;
       return;
     }
     drawerItems.innerHTML = lines.map(l => `
-      <div class="drawer-item">
-        <img src="${l.img}" alt="${l.name}" onerror="this.style.visibility='hidden'">
-        <div class="drawer-item-info">
-          <div class="drawer-item-name">${l.name}</div>
-          <div class="drawer-item-price">${l.qty} × ${fmt(l.price)}</div>
+      <div class="flex items-center gap-3 py-3 border-b border-line">
+        <img src="${l.img}" alt="${l.name}" class="w-13 h-13 sm:w-14 sm:h-14 rounded-md object-cover bg-bg" style="width:52px;height:52px" onerror="this.style.visibility='hidden'">
+        <div class="flex-1">
+          <div class="text-sm font-medium">${l.name}</div>
+          <div class="text-xs text-creamdim mt-0.5">${l.qty} × ${fmt(l.price)}</div>
         </div>
-        <div class="stepper">
-          <button onclick="changeQty(${l.id},-1)">−</button>
-          <span class="qty">${l.qty}</span>
-          <button onclick="changeQty(${l.id},1)">+</button>
+        <div class="flex items-center gap-2 border border-line rounded-full px-1 py-1">
+          <button onclick="changeQty(${l.id},-1)" class="w-6 h-6 rounded-full bg-bg flex items-center justify-center">−</button>
+          <span class="text-sm font-medium w-4 text-center">${l.qty}</span>
+          <button onclick="changeQty(${l.id},1)" class="w-6 h-6 rounded-full bg-bg flex items-center justify-center">+</button>
         </div>
       </div>
     `).join('');
@@ -496,12 +302,12 @@
 
   function openDrawer(){
     renderDrawerItems();
-    drawer.classList.add('show');
-    overlay.classList.add('show');
+    overlay.classList.remove('hidden');
+    drawer.classList.remove('translate-y-full');
   }
   function closeDrawerFn(){
-    drawer.classList.remove('show');
-    overlay.classList.remove('show');
+    drawer.classList.add('translate-y-full');
+    overlay.classList.add('hidden');
   }
 
   cartBar.addEventListener('click', openDrawer);
@@ -516,19 +322,54 @@
     const note = custNote.value.trim();
 
     let msg = `Olá! Gostaria de fazer um pedido na Candle Delices:\n\n`;
-    lines.forEach(l => {
-      msg += `• ${l.qty}x ${l.name} — ${fmt(l.subtotal)}\n`;
-    });
+    lines.forEach(l => { msg += `• ${l.qty}x ${l.name} — ${fmt(l.subtotal)}\n`; });
     msg += `\nTotal: ${fmt(total)}`;
     if(name) msg += `\n\nNome: ${name}`;
     if(note) msg += `\nMorada/notas: ${note}`;
 
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   });
+
+  /* ---------------- animations ---------------- */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function heroIntro(){
+    if(reduceMotion){ return; }
+    gsap.set(['#logo', '#hero-title', '#hero-sub', '#hero-cta'], { opacity: 0, y: 18 });
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
+      .to('#logo', { opacity: 1, y: 0, duration: 0.7 })
+      .to('#hero-title', { opacity: 1, y: 0, duration: 0.7 }, '-=0.45')
+      .to('#hero-sub', { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+      .to('#hero-cta', { opacity: 1, y: 0, duration: 0.5 }, '-=0.35');
+  }
+
+  function animateGrid(){
+    if(reduceMotion){
+      document.querySelectorAll('[data-reveal], .product-card').forEach(el => el.style.opacity = 1);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('[data-reveal]').forEach(el => {
+      gsap.fromTo(el, { opacity: 0, y: 16 }, {
+        opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+
+    ScrollTrigger.batch('.product-card', {
+      start: 'top 90%',
+      onEnter: batch => gsap.fromTo(batch,
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out', stagger: 0.08 }
+      ),
+      once: true,
+    });
+  }
 
   renderGrid();
   updateBar();
+  heroIntro();
 </script>
 </body>
 </html>
