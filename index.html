@@ -60,6 +60,18 @@
     animation: flicker 4.5s ease-in-out infinite;
   }
 
+  @keyframes flame-flicker{
+    0%, 100% { transform: translateX(-50%) rotate(-3deg) scaleY(1); }
+    25%      { transform: translateX(-50%) rotate(2deg)  scaleY(1.1); }
+    50%      { transform: translateX(-50%) rotate(-2deg) scaleY(0.92); }
+    75%      { transform: translateX(-50%) rotate(3deg)  scaleY(1.06); }
+  }
+  .flame-icon{
+    animation: flame-flicker 1.6s ease-in-out infinite;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 0 5px rgba(230,161,60,0.75));
+  }
+
   [data-reveal]{ opacity: 0; }
 
   .stepper button{ -webkit-tap-highlight-color: transparent; }
@@ -82,7 +94,7 @@
            class="w-52 sm:w-64 h-auto mb-2 select-none" draggable="false">
 
       <h1 id="hero-title" class="font-display font-medium text-3xl sm:text-5xl leading-tight text-cream mt-4 max-w-[14ch]">
-        Acenda uma pausa no dia.
+        Acenda uma pausa no d<span class="relative inline-block">ı<i data-lucide="flame" class="flame-icon absolute left-1/2 text-flame" style="top:-0.6em; width:0.42em; height:0.42em;"></i></span>a
       </h1>
 
       <p id="hero-sub" class="font-body text-sm sm:text-base text-creamdim mt-4 max-w-[36ch]">
@@ -439,6 +451,7 @@
 
   updateBar();
   heroIntro();
+  lucide.createIcons();
   loadProducts();
 </script>
 </body>
