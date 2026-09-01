@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candle Delices — Velas Decorativas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1a1410;
+    --bg-raised: #241c16;
+    --bg-card: #2a221a;
+    --line: #3a2f24;
+    --flame: #e39a3d;
+    --flame-dim: #b87a2e;
+    --wax: #8b5e3c;
+    --cream: #f2e8da;
+    --cream-dim: #a89684;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ -webkit-text-size-adjust: 100%; }
+  body{
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Work Sans', sans-serif;
+    line-height: 1.5;
+    padding-bottom: 90px;
+  }
+  h1,h2,h3, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 48px 24px 36px;
+    position: relative;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(227,154,61,0.14), transparent 70%),
+      var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .mark{
+    height: 92px;
+    width: auto;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .hero h1{
+    font-size: 40px;
+    line-height: 1.05;
+    color: var(--cream);
+    max-width: 11ch;
+  }
+  .hero h1 em{
+    font-style: italic;
+    color: var(--flame);
+  }
+  .hero p{
+    margin-top: 14px;
+    color: var(--cream-dim);
+    font-size: 15px;
+    max-width: 34ch;
+  }
+
+  /* ---------- Product grid ---------- */
+  .catalog{ padding: 32px 20px 16px; }
+  .catalog-heading{
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .catalog-sub{
+    color: var(--cream-dim);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  .grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .card{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-img{
+    aspect-ratio: 1 / 1;
+    background: var(--bg-raised);
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-body{
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .card-name{
+    font-size: 15px;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .card-note{
+    font-size: 12px;
+    color: var(--cream-dim);
+    flex: 1;
+  }
+  .card-footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .card-price{
+    font-size: 15px;
+    color: var(--flame);
+    font-weight: 600;
+  }
+
+  .stepper{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 3px;
+  }
+  .stepper button{
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-raised);
+    color: var(--cream);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .stepper button:active{ background: var(--flame-dim); }
+  .stepper .qty{
+    min-width: 14px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .add-btn{
+    width: 100%;
+    padding: 8px 0;
+    border-radius: 20px;
+    border: 1px solid var(--flame-dim);
+    background: transparent;
+    color: var(--flame);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .add-btn:active{ background: rgba(227,154,61,0.12); }
+
+  /* ---------- Sticky cart bar ---------- */
+  .cart-bar{
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    background: var(--flame);
+    color: #1a1410;
+    border-radius: 30px;
+    padding: 14px 20px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 40;
+    cursor: pointer;
+    border: none;
+  }
+  .cart-bar.show{ display: flex; }
+  .cart-bar .cnt{
+    background: #1a1410;
+    color: var(--flame);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+
+  /* ---------- Drawer ---------- */
+  .overlay{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 50;
+    display: none;
+  }
+  .overlay.show{ display: block; }
+  .drawer{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--bg-raised);
+    border-top: 1px solid var(--line);
+    border-radius: 18px 18px 0 0;
+    z-index: 51;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.28s ease;
+  }
+  .drawer.show{ transform: translateY(0); }
+  .drawer-handle{
+    width: 36px; height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    margin: 12px auto 4px;
+  }
+  .drawer-head{
+    padding: 8px 20px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .drawer-head h3{ font-size: 18px; }
+  .drawer-head button{
+    background: none; border: none;
+    color: var(--cream-dim);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .drawer-items{
+    overflow-y: auto;
+    padding: 8px 20px;
+    flex: 1;
+  }
+  .drawer-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .drawer-item img{
+    width: 52px; height: 52px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: var(--bg);
+  }
+  .drawer-item-info{ flex: 1; }
+  .drawer-item-name{ font-size: 14px; font-weight: 500; }
+  .drawer-item-price{ font-size: 12px; color: var(--cream-dim); margin-top: 2px; }
+  .empty-msg{
+    color: var(--cream-dim);
+    font-size: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .drawer-foot{
+    padding: 16px 20px 22px;
+    border-top: 1px solid var(--line);
+  }
+  .field{
+    margin-bottom: 10px;
+  }
+  .field label{
+    display: block;
+    font-size: 12px;
+    color: var(--cream-dim);
+    margin-bottom: 4px;
+  }
+  .field input, .field textarea{
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 9px 10px;
+    color: var(--cream);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14px;
+  }
+  .field textarea{ resize: none; height: 48px; }
+  .total-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 12px 0 14px;
+  }
+  .total-row .label{ font-size: 13px; color: var(--cream-dim); }
+  .total-row .amount{ font-size: 22px; font-family: 'Fraunces', serif; color: var(--flame); }
+
+  .checkout-btn{
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background: #25D366;
+    color: #0b1f12;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .checkout-btn:disabled{
+    opacity: 0.4;
+  }
+
+  footer{
+    text-align: center;
+    padding: 30px 20px 10px;
+    color: var(--cream-dim);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <section class="hero">
+    <img class="mark" src="images/logo-candle-delices.png" alt="Candle Delices">
+    <h1>Um momento de <em>pausa</em>, aceso à mão.</h1>
+    <p>Velas decorativas com aromas próprios, compostos em casa e não encontrados em mais lado nenhum. Cera vegetal, queima lenta.</p>
+  </section>
+
+  <section class="catalog">
+    <div class="catalog-heading">Coleção</div>
+    <div class="catalog-sub">8 aromas próprios, cera vegetal, feitas em pequenos lotes.</div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer>Candle Delices — velas feitas à mão, em pequenos lotes</footer>
+
+  <!-- Sticky cart bar -->
+  <button class="cart-bar" id="cartBar">
+    <span><span class="cnt" id="cartCount">0</span>Ver carrinho</span>
+    <span id="cartTotal">0,00 €</span>
+  </button>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-handle"></div>
+    <div class="drawer-head">
+      <h3>O seu pedido</h3>
+      <button id="closeDrawer">✕</button>
+    </div>
+    <div class="drawer-items" id="drawerItems"></div>
+    <div class="drawer-foot">
+      <div class="field">
+        <label for="custName">Nome</label>
+        <input type="text" id="custName" placeholder="O seu nome">
+      </div>
+      <div class="field">
+        <label for="custNote">Morada / notas de entrega (opcional)</label>
+        <textarea id="custNote" placeholder="Morada para entrega ou notas"></textarea>
+      </div>
+      <div class="total-row">
+        <span class="label">Total</span>
+        <span class="amount" id="drawerTotal">0,00 €</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn" disabled>Enviar pedido por WhatsApp</button>
+    </div>
+  </div>
+
+<script>
+  const WHATSAPP_NUMBER = "351965271744";
+
+  const PRODUCTS = [
+    { id: 1, name: "Lavanda & Baunilha", note: "Mistura própria: lavanda de secar ao vento e baunilha tostada.", price: 12.00, img: "images/vela-lavanda-baunilha.jpg" },
+    { id: 2, name: "Madeira de Cedro",   note: "Composição exclusiva, notas de cedro após a chuva.", price: 14.00, img: "images/vela-cedro.jpg" },
+    { id: 3, name: "Flor de Laranjeira", note: "Aroma assinatura, casca de laranja e flor de azahar.", price: 12.00, img: "images/vela-flor-laranjeira.jpg" },
+    { id: 4, name: "Canela & Especiarias", note: "Blend próprio de canela, cravinho e noz-moscada.", price: 13.00, img: "images/vela-canela.jpg" },
+    { id: 5, name: "Coco & Amêndoa", note: "Fragrância exclusiva, coco cremoso e amêndoa torrada.", price: 12.00, img: "images/vela-coco-amendoa.jpg" },
+    { id: 6, name: "Âmbar & Sândalo", note: "Composição densa e exclusiva, âmbar quente e sândalo.", price: 15.00, img: "images/vela-ambar-sandalo.jpg" },
+    { id: 7, name: "Rosa & Peónia", note: "Aroma próprio, pétalas frescas de rosa e peónia.", price: 13.00, img: "images/vela-rosa-peonia.jpg" },
+    { id: 8, name: "Café Torrado", note: "Fragrância assinatura, café acabado de moer.", price: 12.00, img: "images/vela-cafe.jpg" },
+  ];
+
+  const cart = {}; // id -> qty
+
+  const grid = document.getElementById('grid');
+  const cartBar = document.getElementById('cartBar');
+  const cartCount = document.getElementById('cartCount');
+  const cartTotal = document.getElementById('cartTotal');
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('overlay');
+  const drawerItems = document.getElementById('drawerItems');
+  const drawerTotal = document.getElementById('drawerTotal');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const custName = document.getElementById('custName');
+  const custNote = document.getElementById('custNote');
+
+  function fmt(v){ return v.toFixed(2).replace('.', ',') + ' €'; }
+
+  function renderGrid(){
+    grid.innerHTML = PRODUCTS.map(p => `
+      <div class="card">
+        <div class="card-img"><img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='var(--bg-raised)'; this.remove();"></div>
+        <div class="card-body">
+          <div class="card-name">${p.name}</div>
+          <div class="card-note">${p.note}</div>
+          <div class="card-footer">
+            <div class="card-price">${fmt(p.price)}</div>
+          </div>
+          <div id="ctrl-${p.id}"></div>
+        </div>
+      </div>
+    `).join('');
+    PRODUCTS.forEach(p => renderControl(p.id));
+  }
+
+  function renderControl(id){
+    const el = document.getElementById(`ctrl-${id}`);
+    const qty = cart[id] || 0;
+    if(qty === 0){
+      el.innerHTML = `<button class="add-btn" onclick="changeQty(${id},1)">Adicionar</button>`;
+    } else {
+      el.innerHTML = `
+        <div class="stepper">
+          <button onclick="changeQty(${id},-1)">−</button>
+          <span class="qty">${qty}</span>
+          <button onclick="changeQty(${id},1)">+</button>
+        </div>`;
+    }
+  }
+
+  function changeQty(id, delta){
+    const next = (cart[id] || 0) + delta;
+    if(next <= 0){ delete cart[id]; } else { cart[id] = next; }
+    renderControl(id);
+    updateBar();
+    renderDrawerItems();
+  }
+
+  function cartLines(){
+    return Object.entries(cart).map(([id, qty]) => {
+      const p = PRODUCTS.find(x => x.id === Number(id));
+      return { ...p, qty, subtotal: p.price * qty };
+    });
+  }
+
+  function updateBar(){
+    const lines = cartLines();
+    const count = lines.reduce((s, l) => s + l.qty, 0);
+    const total = lines.reduce((s, l) => s + l.subtotal, 0);
+    cartCount.textContent = count;
+    cartTotal.textContent = fmt(total);
+    drawerTotal.textContent = fmt(total);
+    cartBar.classList.toggle('show', count > 0);
+    checkoutBtn.disabled = count === 0;
+  }
+
+  function renderDrawerItems(){
+    const lines = cartLines();
+    if(lines.length === 0){
+      drawerItems.innerHTML = `<div class="empty-msg">O carrinho está vazio.<br>Adicione velas para começar.</div>`;
+      return;
+    }
+    drawerItems.innerHTML = lines.map(l => `
+      <div class="drawer-item">
+        <img src="${l.img}" alt="${l.name}" onerror="this.style.visibility='hidden'">
+        <div class="drawer-item-info">
+          <div class="drawer-item-name">${l.name}</div>
+          <div class="drawer-item-price">${l.qty} × ${fmt(l.price)}</div>
+        </div>
+        <div class="stepper">
+          <button onclick="changeQty(${l.id},-1)">−</button>
+          <span class="qty">${l.qty}</span>
+          <button onclick="changeQty(${l.id},1)">+</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openDrawer(){
+    renderDrawerItems();
+    drawer.classList.add('show');
+    overlay.classList.add('show');
+  }
+  function closeDrawerFn(){
+    drawer.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+
+  cartBar.addEventListener('click', openDrawer);
+  document.getElementById('closeDrawer').addEventListener('click', closeDrawerFn);
+  overlay.addEventListener('click', closeDrawerFn);
+
+  checkoutBtn.addEventListener('click', () => {
+    const lines = cartLines();
+    if(lines.length === 0) return;
+    const total = lines.reduce((s, l) => s + l.subtotal, 0);
+    const name = custName.value.trim();
+    const note = custNote.value.trim();
+
+    let msg = `Olá! Gostaria de fazer um pedido na Candle Delices:\n\n`;
+    lines.forEach(l => {
+      msg += `• ${l.qty}x ${l.name} — ${fmt(l.subtotal)}\n`;
+    });
+    msg += `\nTotal: ${fmt(total)}`;
+    if(name) msg += `\n\nNome: ${name}`;
+    if(note) msg += `\nMorada/notas: ${note}`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  });
+
+  renderGrid();
+  updateBar();
+</script>
+</body>
+</html>
