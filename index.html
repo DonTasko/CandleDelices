@@ -14,6 +14,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <script>
   tailwind.config = {
@@ -170,19 +171,41 @@
 
 <script>
   const WHATSAPP_NUMBER = "351965271744";
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAWIPtvFKyYLDBdaBCbHShujcwx73tR7g-8Klf2g84w-LTQIe5vAcv_OA-SzgLUSV2v9Y_-tu2pOg5/pub?output=csv";
 
-  const PRODUCTS = [
-    { id: 1, name: "Bougie Vanille", note: "Mistura própria: lavanda de secar ao vento e baunilha tostada.", price: 12.00, img: "images/8.png" },
-    { id: 2, name: "Madeira de Cedro",   note: "Composição exclusiva, notas de cedro após a chuva.", price: 14.00, img: "images/vela-cedro.jpg" },
-    { id: 3, name: "Flor de Laranjeira", note: "Aroma assinatura, casca de laranja e flor de azahar.", price: 12.00, img: "images/vela-flor-laranjeira.jpg" },
-    { id: 4, name: "Canela & Especiarias", note: "Blend próprio de canela, cravinho e noz-moscada.", price: 13.00, img: "images/vela-canela.jpg" },
-    { id: 5, name: "Coco & Amêndoa", note: "Fragrância exclusiva, coco cremoso e amêndoa torrada.", price: 12.00, img: "images/vela-coco-amendoa.jpg" },
-    { id: 6, name: "Âmbar & Sândalo", note: "Composição densa e exclusiva, âmbar quente e sândalo.", price: 15.00, img: "images/vela-ambar-sandalo.jpg" },
-    { id: 7, name: "Rosa & Peónia", note: "Aroma próprio, pétalas frescas de rosa e peónia.", price: 13.00, img: "images/vela-rosa-peonia.jpg" },
-    { id: 8, name: "Café Torrado", note: "Fragrância assinatura, café acabado de moer.", price: 12.00, img: "images/vela-cafe.jpg" },
-  ];
-
+  let PRODUCTS = [];
   const cart = {};
+
+  async function loadProducts(){
+    grid.innerHTML = `<p class="col-span-full text-creamdim text-sm text-center py-10">A carregar coleção…</p>`;
+    try {
+      const res = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
+      if(!res.ok) throw new Error("Falha ao ler a sheet");
+      const csvText = await res.text();
+      const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+
+      PRODUCTS = parsed.data
+        .filter(row => (row.ativo || "").trim().toLowerCase() === "sim")
+        .map(row => ({
+          id: Number(row.Id),
+          name: (row.nome || "").trim(),
+          note: (row.aroma || "").trim(),
+          price: parseFloat(String(row.preco).replace(",", ".")) || 0,
+          img: "images/" + (row.imagem || "").trim(),
+          order: Number(row.ordem) || 0,
+        }))
+        .sort((a, b) => a.order - b.order);
+
+      if(PRODUCTS.length === 0){
+        grid.innerHTML = `<p class="col-span-full text-creamdim text-sm text-center py-10">Sem velas disponíveis de momento.</p>`;
+        return;
+      }
+      renderGrid();
+    } catch(err){
+      console.error(err);
+      grid.innerHTML = `<p class="col-span-full text-creamdim text-sm text-center py-10">Não foi possível carregar a coleção. Tenta recarregar a página.</p>`;
+    }
+  }
 
   const grid = document.getElementById('grid');
   const cartBar = document.getElementById('cartBar');
@@ -367,9 +390,9 @@
     });
   }
 
-  renderGrid();
   updateBar();
   heroIntro();
+  loadProducts();
 </script>
 </body>
 </html>
