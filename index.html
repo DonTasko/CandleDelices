@@ -107,6 +107,8 @@
       <i data-lucide="flame" class="w-6 h-6 text-flame shrink-0"></i>
     </div>
 
+    <div id="filters" class="flex gap-2 overflow-x-auto pb-1 mb-5 -mx-5 px-5 sm:mx-0 sm:px-0" style="scrollbar-width:none;"></div>
+
     <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
   </section>
 
@@ -193,6 +195,10 @@
           price: parseFloat(String(row.preco).replace(",", ".")) || 0,
           img: "images/" + (row.imagem || "").trim(),
           order: Number(row.ordem) || 0,
+          categories: (row.colecao || "")
+            .split(",")
+            .map(c => c.trim())
+            .filter(Boolean),
         }))
         .sort((a, b) => a.order - b.order);
 
@@ -200,6 +206,7 @@
         grid.innerHTML = `<p class="col-span-full text-creamdim text-sm text-center py-10">Sem velas disponíveis de momento.</p>`;
         return;
       }
+      renderFilters();
       renderGrid();
     } catch(err){
       console.error(err);
@@ -221,6 +228,40 @@
 
   function fmt(v){ return v.toFixed(2).replace('.', ',') + ' €'; }
 
+  const filtersEl = document.getElementById('filters');
+  let activeCategory = 'Todas';
+
+  function renderFilters(){
+    const all = new Set();
+    PRODUCTS.forEach(p => p.categories.forEach(c => all.add(c)));
+    const cats = ['Todas', ...Array.from(all).sort((a, b) => a.localeCompare(b, 'pt'))];
+
+    if(cats.length <= 1){ filtersEl.innerHTML = ''; return; }
+
+    filtersEl.innerHTML = cats.map(c => `
+      <button data-cat="${c}"
+        class="filter-chip whitespace-nowrap text-xs font-medium px-4 py-2 rounded-full border transition-colors
+        ${c === activeCategory
+          ? 'bg-flame text-bg border-flame'
+          : 'bg-transparent text-creamdim border-line hover:border-flamedim hover:text-cream'}">
+        ${c}
+      </button>
+    `).join('');
+
+    filtersEl.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.cat;
+        renderFilters();
+        renderGrid();
+      });
+    });
+  }
+
+  function filteredProducts(){
+    if(activeCategory === 'Todas') return PRODUCTS;
+    return PRODUCTS.filter(p => p.categories.includes(activeCategory));
+  }
+
   function cardHTML(p){
     return `
       <div class="product-card bg-card border border-line rounded-lg overflow-hidden flex flex-col" data-id="${p.id}">
@@ -241,8 +282,14 @@
   }
 
   function renderGrid(){
-    grid.innerHTML = PRODUCTS.map(cardHTML).join('');
-    PRODUCTS.forEach(p => renderControl(p.id));
+    const list = filteredProducts();
+    if(list.length === 0){
+      grid.innerHTML = `<p class="col-span-full text-creamdim text-sm text-center py-10">Sem velas nesta coleção.</p>`;
+      lucide.createIcons();
+      return;
+    }
+    grid.innerHTML = list.map(cardHTML).join('');
+    list.forEach(p => renderControl(p.id));
     lucide.createIcons();
     animateGrid();
   }
