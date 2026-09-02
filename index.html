@@ -159,6 +159,12 @@
 
     <div class="px-5 sm:px-6 pt-4 pb-6 border-t border-line">
       <div class="mb-2.5">
+        <label for="custCountry" class="block text-xs text-creamdim mb-1">País de entrega</label>
+        <select id="custCountry"
+          class="w-full bg-bg border border-line rounded-lg px-3 py-2.5 text-sm text-cream focus:outline-none focus:border-flamedim">
+        </select>
+      </div>
+      <div class="mb-2.5">
         <label for="custName" class="block text-xs text-creamdim mb-1">Nome</label>
         <input id="custName" type="text" placeholder="O seu nome"
           class="w-full bg-bg border border-line rounded-lg px-3 py-2.5 text-sm text-cream placeholder:text-creamdim/60 focus:outline-none focus:border-flamedim">
@@ -169,9 +175,19 @@
           class="w-full bg-bg border border-line rounded-lg px-3 py-2.5 text-sm text-cream placeholder:text-creamdim/60 resize-none focus:outline-none focus:border-flamedim"></textarea>
       </div>
 
-      <div class="flex items-baseline justify-between mb-3.5">
-        <span class="text-xs text-creamdim">Total</span>
-        <span id="drawerTotal" class="font-display text-2xl text-flame">0,00 €</span>
+      <div class="space-y-1.5 mb-3.5 text-sm">
+        <div class="flex items-center justify-between text-creamdim">
+          <span>Subtotal</span>
+          <span id="subtotalAmount">0,00 €</span>
+        </div>
+        <div class="flex items-center justify-between text-creamdim">
+          <span>Portes de envio</span>
+          <span id="shippingAmount">0,00 €</span>
+        </div>
+        <div class="flex items-baseline justify-between pt-1.5 border-t border-line">
+          <span class="text-xs text-creamdim">Total</span>
+          <span id="drawerTotal" class="font-display text-2xl text-flame">0,00 €</span>
+        </div>
       </div>
 
       <button id="checkoutBtn" disabled
@@ -186,6 +202,15 @@
 <script>
   const WHATSAPP_NUMBER = "351965271744";
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAWIPtvFKyYLDBdaBCbHShujcwx73tR7g-8Klf2g84w-LTQIe5vAcv_OA-SzgLUSV2v9Y_-tu2pOg5/pub?output=csv";
+
+  // Portes de envio por país — edita valores/países livremente aqui
+  const SHIPPING_RATES = {
+    "Portugal Continental": 4.50,
+    "Portugal — Ilhas (Açores/Madeira)": 8.50,
+    "Espanha": 9.90,
+    "Resto da Europa": 14.90,
+    "Resto do Mundo": 24.90,
+  };
 
   let PRODUCTS = [];
   const cart = {};
@@ -237,8 +262,18 @@
   const checkoutBtn = document.getElementById('checkoutBtn');
   const custName = document.getElementById('custName');
   const custNote = document.getElementById('custNote');
+  const custCountry = document.getElementById('custCountry');
+  const subtotalAmount = document.getElementById('subtotalAmount');
+  const shippingAmount = document.getElementById('shippingAmount');
 
   function fmt(v){ return v.toFixed(2).replace('.', ',') + ' €'; }
+
+  function populateCountries(){
+    custCountry.innerHTML = Object.keys(SHIPPING_RATES).map(c =>
+      `<option value="${c}">${c} — ${fmt(SHIPPING_RATES[c])}</option>`
+    ).join('');
+  }
+  custCountry.addEventListener('change', updateBar);
 
   const filtersEl = document.getElementById('filters');
   let activeCategory = 'Todas';
@@ -344,9 +379,14 @@
   function updateBar(){
     const lines = cartLines();
     const count = lines.reduce((s, l) => s + l.qty, 0);
-    const total = lines.reduce((s, l) => s + l.subtotal, 0);
+    const subtotal = lines.reduce((s, l) => s + l.subtotal, 0);
+    const shippingCost = SHIPPING_RATES[custCountry.value] ?? 0;
+    const total = subtotal + (count > 0 ? shippingCost : 0);
+
     cartCount.textContent = count;
     cartTotal.textContent = fmt(total);
+    subtotalAmount.textContent = fmt(subtotal);
+    shippingAmount.textContent = count > 0 ? fmt(shippingCost) : fmt(0);
     drawerTotal.textContent = fmt(total);
     checkoutBtn.disabled = count === 0;
 
@@ -399,12 +439,17 @@
   checkoutBtn.addEventListener('click', () => {
     const lines = cartLines();
     if(lines.length === 0) return;
-    const total = lines.reduce((s, l) => s + l.subtotal, 0);
+    const subtotal = lines.reduce((s, l) => s + l.subtotal, 0);
+    const country = custCountry.value;
+    const shippingCost = SHIPPING_RATES[country] ?? 0;
+    const total = subtotal + shippingCost;
     const name = custName.value.trim();
     const note = custNote.value.trim();
 
     let msg = `Olá! Gostaria de fazer um pedido na Candle Delices:\n\n`;
     lines.forEach(l => { msg += `• ${l.qty}x ${l.name} — ${fmt(l.subtotal)}\n`; });
+    msg += `\nSubtotal: ${fmt(subtotal)}`;
+    msg += `\nPortes (${country}): ${fmt(shippingCost)}`;
     msg += `\nTotal: ${fmt(total)}`;
     if(name) msg += `\n\nNome: ${name}`;
     if(note) msg += `\nMorada/notas: ${note}`;
@@ -449,6 +494,7 @@
     });
   }
 
+  populateCountries();
   updateBar();
   heroIntro();
   lucide.createIcons();
