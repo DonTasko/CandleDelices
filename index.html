@@ -153,6 +153,27 @@
     <span id="cartTotal">0,00 €</span>
   </button>
 
+  <!-- ================= PRODUCT MODAL ================= -->
+  <div id="productOverlay" class="hidden fixed inset-0 bg-black/60 z-50"></div>
+  <div id="productModal" class="hidden fixed inset-0 z-50 items-center justify-center p-4">
+    <div class="modal-box opacity-0 scale-95 transition-all duration-200 bg-card border border-line rounded-2xl max-w-sm w-full max-h-[85vh] overflow-y-auto">
+      <div class="relative aspect-square bg-raised">
+        <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
+        <button onclick="closeProductModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg/90 flex items-center justify-center text-cream">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-5">
+        <h3 id="modalName" class="font-display text-xl mb-2"></h3>
+        <p id="modalNote" class="text-sm text-creamdim leading-relaxed mb-5"></p>
+        <div class="flex items-center justify-between gap-4">
+          <span id="modalPrice" class="text-flame font-semibold text-lg font-body shrink-0"></span>
+          <div id="modalCtrl" class="w-32"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= DRAWER ================= -->
   <div id="overlay" class="hidden fixed inset-0 bg-black/60 z-50"></div>
 
@@ -325,18 +346,21 @@
   function cardHTML(p){
     return `
       <div class="product-card bg-card border border-line rounded-lg overflow-hidden flex flex-col" data-id="${p.id}">
-        <div class="aspect-square bg-raised overflow-hidden">
+        <button type="button" onclick="openProductModal(${p.id})" class="aspect-square bg-raised overflow-hidden text-left w-full">
           <img src="${p.img}" alt="${p.name}" loading="lazy" draggable="false"
                class="w-full h-full object-cover transition-transform duration-500 ease-out hover:scale-105"
                onerror="this.parentElement.classList.add('flex','items-center','justify-center'); this.remove();">
-        </div>
+        </button>
         <div class="p-3 flex flex-col gap-1.5 flex-1">
-          <div class="font-display text-[15px] leading-tight">${p.name}</div>
-          <div class="text-xs text-creamdim flex-1">${p.note}</div>
+          <button type="button" onclick="openProductModal(${p.id})" class="text-left">
+            <div class="font-display text-[15px] leading-tight">${p.name}</div>
+            <div class="text-xs text-creamdim line-clamp-2 mt-1">${p.note}</div>
+            <div class="text-[10px] text-flame tracking-wide mt-1">Ver descrição</div>
+          </button>
           <div class="flex items-center justify-between mt-1">
             <span class="text-flame text-[15px] font-semibold font-body">${fmt(p.price)}</span>
           </div>
-          <div class="ctrl mt-1"></div>
+          <div class="ctrl mt-1" data-ctrl-for="${p.id}"></div>
         </div>
       </div>`;
   }
@@ -354,25 +378,66 @@
     animateGrid();
   }
 
-  function renderControl(id){
-    const card = grid.querySelector(`.product-card[data-id="${id}"] .ctrl`);
+  function controlHTML(id){
     const qty = cart[id] || 0;
     if(qty === 0){
-      card.innerHTML = `
-        <button onclick="changeQty(${id},1)"
+      return `
+        <button onclick="event.stopPropagation(); changeQty(${id},1)"
           class="w-full py-2 rounded-full border border-flamedim text-flame text-xs font-medium
                  hover:bg-flame/10 active:scale-[0.98] transition">
           Adicionar
         </button>`;
-    } else {
-      card.innerHTML = `
-        <div class="flex items-center justify-between border border-line rounded-full px-1 py-1">
-          <button onclick="changeQty(${id},-1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">−</button>
-          <span class="text-sm font-medium">${qty}</span>
-          <button onclick="changeQty(${id},1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">+</button>
-        </div>`;
     }
+    return `
+      <div class="flex items-center justify-between border border-line rounded-full px-1 py-1">
+        <button onclick="event.stopPropagation(); changeQty(${id},-1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">−</button>
+        <span class="text-sm font-medium">${qty}</span>
+        <button onclick="event.stopPropagation(); changeQty(${id},1)" class="w-6 h-6 rounded-full bg-raised flex items-center justify-center active:bg-flamedim/60">+</button>
+      </div>`;
   }
+
+  function renderControl(id){
+    document.querySelectorAll(`[data-ctrl-for="${id}"]`).forEach(el => {
+      el.innerHTML = controlHTML(id);
+    });
+  }
+
+  /* ---------------- product modal ---------------- */
+  const productOverlay = document.getElementById('productOverlay');
+  const productModal = document.getElementById('productModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalName = document.getElementById('modalName');
+  const modalNote = document.getElementById('modalNote');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalCtrl = document.getElementById('modalCtrl');
+
+  function openProductModal(id){
+    const p = PRODUCTS.find(x => x.id === id);
+    if(!p) return;
+    modalImg.src = p.img;
+    modalImg.alt = p.name;
+    modalName.textContent = p.name;
+    modalNote.textContent = p.note;
+    modalPrice.textContent = fmt(p.price);
+    modalCtrl.setAttribute('data-ctrl-for', id);
+    renderControl(id);
+    productOverlay.classList.remove('hidden');
+    productModal.classList.remove('hidden');
+    productModal.classList.add('flex');
+    requestAnimationFrame(() => {
+      productModal.querySelector('.modal-box').classList.remove('opacity-0','scale-95');
+    });
+  }
+  function closeProductModal(){
+    productModal.querySelector('.modal-box').classList.add('opacity-0','scale-95');
+    productOverlay.classList.add('hidden');
+    setTimeout(() => {
+      productModal.classList.add('hidden');
+      productModal.classList.remove('flex');
+    }, 150);
+  }
+  productOverlay.addEventListener('click', closeProductModal);
+
 
   function changeQty(id, delta){
     const next = (cart[id] || 0) + delta;
