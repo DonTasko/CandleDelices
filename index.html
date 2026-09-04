@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>MYNE Candle — Velas Decorativas</title>
-<meta name="description" content="MYNE Candle — velas decorativas com aromas próprios, compostas à mão em pequenos lotes.">
+<title>Tempero de Luz — Velas Decorativas</title>
+<meta name="description" content="Tempero de Luz — velas decorativas com aromas próprios, compostas à mão em pequenos lotes.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,8 +94,8 @@
     <div class="absolute inset-0 bg-bg/85"></div>
     <div class="glow pointer-events-none absolute left-1/2 top-16 -translate-x-1/2 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-flame/30 blur-3xl"></div>
 
-    <img id="logo" src="images/logo-myne-candle.png" alt="MYNE Candle"
-         class="absolute top-4 left-4 sm:top-6 sm:left-6 w-16 sm:w-20 h-auto select-none z-10" draggable="false">
+    <img id="logo" src="images/logo-tempero-de-luz.png" alt="Tempero de Luz"
+         class="absolute top-4 left-4 sm:top-6 sm:left-6 w-20 sm:w-24 h-auto select-none z-10" draggable="false">
 
     <div class="relative max-w-md sm:max-w-xl mx-auto flex flex-col items-center text-center pt-8 sm:pt-6">
       <h1 id="hero-title" class="font-display font-medium text-3xl sm:text-5xl leading-tight text-cream mt-4 max-w-[14ch]">
@@ -138,7 +138,7 @@
   </section>
 
   <footer class="text-center text-creamdim text-[11px] tracking-widest uppercase py-10 px-6">
-    MYNE Candle — velas feitas à mão, em pequenos lotes
+    Tempero de Luz — velas feitas à mão, em pequenos lotes
   </footer>
 
   <!-- ================= STICKY CART BAR ================= -->
@@ -524,7 +524,7 @@
     const name = custName.value.trim();
     const note = custNote.value.trim();
 
-    let msg = `Olá! Gostaria de fazer um pedido na MYNE Candle:\n\n`;
+    let msg = `Olá! Gostaria de fazer um pedido na Tempero de Luz:\n\n`;
     lines.forEach(l => { msg += `• ${l.qty}x ${l.name} — ${fmt(l.subtotal)}\n`; });
     msg += `\nSubtotal: ${fmt(subtotal)}`;
     msg += `\nPortes (${country}): ${fmt(shippingCost)}`;
